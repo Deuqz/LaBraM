@@ -11,6 +11,8 @@ from mne.viz import plot_topomap
 from mne.channels import make_standard_montage
 from mne import create_info
 
+from utils import standard_1020
+
 
 class SingleEDFDataset(Dataset):
     """Process a single EDF file and create a dataset."""
@@ -58,6 +60,17 @@ class SingleEDFDataset(Dataset):
                 raise ValueError("Not all required channels are present in the file.")
 
             raw.pick_channels(self.important_channels)  # select only the "important" channels
+
+            imp_ch_set = set([x.upper() for x in self.important_channels])
+            reordered_channels = []
+            for ch_name in standard_1020:
+                if ch_name in imp_ch_set:
+                    if ch_name == 'Fp2' or ch_name == 'Fp1':
+                        ch_name = 'Fp' + ch_name[2]
+                    elif ch_name == 'Cz' or ch_name == 'Fz':
+                        ch_name = ch_name[0] + 'z'
+                    reordered_channels.append(ch_name)
+            raw.reorder_channels(reordered_channels)
 
             # Preprocess data
             raw.filter(0.5, 40)
