@@ -137,8 +137,12 @@ class NeuralTransformerForMaskedEEGModeling(nn.Module):
         w = bool_masked_pos.unsqueeze(-1).type_as(mask_token)
         x = x * (1 - w) + mask_token * w
 
+        print('x.shape', x.shape)
+        print('self.pos_embed.shape', self.pos_embed.shape)
         x = torch.cat((cls_tokens, x), dim=1)
         pos_embed_used = self.pos_embed[:, input_chans] if input_chans is not None else self.pos_embed
+        print('(1) x.shape', x.shape)
+        print('pos_embed_used.shape', pos_embed_used.shape)
         if self.pos_embed is not None:
             pos_embed = pos_embed_used[:, 1:, :].unsqueeze(2).expand(batch_size, -1, time_window, -1).flatten(1, 2)
             pos_embed = torch.cat((pos_embed[:,0:1,:].expand(batch_size, -1, -1), pos_embed), dim=1)
