@@ -87,7 +87,7 @@ if __name__ == "__main__":
     TUAB dataset is downloaded from https://isip.piconepress.com/projects/tuh_eeg/html/downloads.shtml
     """
     # root to abnormal dataset
-    root = "/userhome1/jiangweibang/Datasets/TUH_Abnormal/v3.0.0/edf/"
+    root = "/home/dmedvedeva/TUAB/"
     channel_std = "01_tcp_ar"
 
     # train, val abnormal subjects
@@ -138,20 +138,44 @@ if __name__ == "__main__":
 
     # fetch_folder, sub, dump_folder, labels
     parameters = []
+    i = 0
     for train_sub in train_a_sub:
         parameters.append([train_val_abnormal, train_sub, train_dump_folder, 1])
+        i += 1
+        if i == 8:
+            break
+    i = 0
     for train_sub in train_n_sub:
         parameters.append([train_val_normal, train_sub, train_dump_folder, 0])
+        i += 1
+        if i == 8:
+            break
+    i = 0
     for val_sub in val_a_sub:
         parameters.append([train_val_abnormal, val_sub, val_dump_folder, 1])
+        i += 1
+        if i == 8:
+            break
+    i = 0
     for val_sub in val_n_sub:
         parameters.append([train_val_normal, val_sub, val_dump_folder, 0])
+        i += 1
+        if i == 8:
+            break
+    i = 0
     for test_sub in test_a_sub:
         parameters.append([test_abnormal, test_sub, test_dump_folder, 1])
+        i += 1
+        if i == 8:
+            break
+    i = 0
     for test_sub in test_n_sub:
         parameters.append([test_normal, test_sub, test_dump_folder, 0])
+        i += 1
+        if i == 8:
+            break
 
     # split and dump in parallel
-    with Pool(processes=24) as pool:
+    with Pool(processes=1) as pool:
         # Use the pool.map function to apply the square function to each element in the numbers list
         result = pool.map(split_and_dump, parameters)
